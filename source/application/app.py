@@ -244,6 +244,11 @@ class XHS:
         # 生成媒体文件引用
         media_content = self._generate_media_references(data, work_id)
         
+        # 过滤标签内容，移除[话题]#格式
+        tags_content = self._filter_tags(data.get('作品标签', ''))
+        # 同时过滤作品描述中的[话题]#格式
+        description_content = self._filter_tags(data.get('作品描述', '暂无描述'))
+        
         content = f"""# {title}
 
 ### 笔记信息
@@ -254,9 +259,9 @@ class XHS:
 主页链接：{data.get('作者链接', '#')}
 
 ### 笔记描述
-{data.get('作品描述', '暂无描述')}
+{description_content}
 
-{data.get('作品标签', '')}
+{tags_content}
 
 ### 互动数据
 - 点赞：{data.get('点赞数量', '0')}
@@ -268,6 +273,22 @@ class XHS:
 
 """
         return content
+
+    def _filter_tags(self, tags_text: str) -> str:
+        """过滤标签内容，移除[话题]#格式的关键词"""
+        if not tags_text:
+            return ""
+        
+        import re
+        
+        # 移除包含[话题]#的标签
+        # 匹配模式：#任意文字[话题]#
+        filtered_text = re.sub(r'#[^#]*\[话题\]#\s*', '', tags_text)
+        
+        # 清理多余的空行和空格
+        filtered_text = re.sub(r'\n\s*\n+', '\n\n', filtered_text.strip())
+        
+        return filtered_text
 
     def _generate_media_references(self, data: dict, work_id: str) -> str:
         """生成媒体文件的markdown引用"""
@@ -343,7 +364,7 @@ class XHS:
                 notes_folder = work_path / "notes"
                 notes_folder.mkdir(exist_ok=True)
             
-            markdown_filename = f"{clean_title}_{work_id}.md"
+            markdown_filename = f"{clean_title}.md"
             markdown_path = notes_folder / markdown_filename
             
             # 确保目录存在
