@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XHS-Downloader
 // @namespace    https://github.com/JoeanAmier/XHS-Downloader
-// @version      2.0.4
+// @version      2.0.0
 // @description  提取小红书作品/用户链接，下载小红书无水印图文/视频作品文件
 // @author       JoeanAmier
 // @match        http*://xhslink.com/*
@@ -223,11 +223,11 @@ XHS-Downloader 用户脚本 详细说明：
                 console.info("下载链接", links);
                 await download(links, note);
             } else {
-                abnormal("处理下载链接发生异常！")
+                abnormal("提取作品文件下载链接发生异常！")
             }
         } catch (error) {
             console.error("Error in exploreDeal function:", error);
-            abnormal("下载作品文件发生异常！");
+            abnormal("下载作品文件失败！");
         }
     };
 
@@ -247,7 +247,7 @@ XHS-Downloader 用户脚本 详细说明：
             if (note.note) {
                 await exploreDeal(note.note);
             } else {
-                abnormal("读取作品数据发生异常！");
+                abnormal();
             }
         }
     };
@@ -276,13 +276,7 @@ XHS-Downloader 用户脚本 详细说明：
         for (let attempt = 1; attempt <= retries; attempt++) {
             try {
                 // 使用 fetch 获取文件数据
-                const response = await fetch(link, {
-                    "headers": {
-                        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-                        "accept-language": "zh-SG,zh;q=0.9",
-                    },
-                    "method": "GET",
-                });
+                const response = await fetch(link, {method: "GET"});
 
                 // 检查响应状态码
                 if (!response.ok) {
@@ -367,7 +361,7 @@ XHS-Downloader 用户脚本 详细说明：
 
     const downloadVideo = async (url, name) => {
         if (!await downloadFile(url, `${name}.mp4`)) {
-            abnormal("下载视频作品文件发生异常！");
+            abnormal();
         }
     };
 
@@ -380,12 +374,12 @@ XHS-Downloader 用户脚本 详细说明：
             }
             success = result.every(item => item === true);
         } else if (items.length === 1) {
-            success = await downloadFile(items[0].url, `${name}.png`);
+            success = await downloadFile(items[0], `${name}.png`);
         } else {
             success = await downloadFiles(items, name,);
         }
         if (!success) {
-            abnormal("下载图文作品文件发生异常！");
+            abnormal();
         }
     };
 
@@ -1304,7 +1298,7 @@ XHS-Downloader 用户脚本 详细说明：
             flex: 1;
         }
 
-        .xhstitle {
+        .title {
             font-size: 0.95rem;
             color: var(--on-surface);
             font-weight: 500;
@@ -1505,7 +1499,7 @@ XHS-Downloader 用户脚本 详细说明：
                     <span class="material-icons">${item.icon}</span>
                 </div>
                 <div class="content">
-                    <div class="xhstitle">${item.text}</div>
+                    <div class="title">${item.text}</div>
                     <div class="subtitle">${item.description}</div>
                 </div>
             `;

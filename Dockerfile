@@ -13,6 +13,8 @@ COPY requirements.txt /app/requirements.txt
 
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-EXPOSE 5556
+VOLUME /app
+
+EXPOSE 6666
 
 CMD ["python", "main.py"]

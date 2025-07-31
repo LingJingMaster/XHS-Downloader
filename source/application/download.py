@@ -87,10 +87,7 @@ class Download:
                 filename,
                 log,
             )
-        elif type_ in {
-            _("图文"),
-            _("图集"),
-        }:
+        elif type_ == _("图文"):
             tasks = self.__ready_download_image(
                 urls,
                 lives,

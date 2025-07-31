@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class ExtractParams(BaseModel):
     url: str
     download: bool = False
-    index: list[str | int] | None = None
+    index: list = None
     cookie: str = None
     proxy: str = None
     skip: bool = False

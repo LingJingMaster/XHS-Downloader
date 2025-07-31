@@ -52,7 +52,7 @@ class About(Screen):
             classes="prompt",
         )
         yield Label(
-            Text("DouK-Downloader (抖音 / TikTok)", style=MASTER),
+            Text("TikTokDownloader (抖音 / TikTok)", style=MASTER),
             classes="prompt",
         )
         yield Link(

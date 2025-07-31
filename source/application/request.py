@@ -32,14 +32,12 @@ class Html:
         proxy: str = None,
         **kwargs,
     ) -> str:
-        if not url.startswith("http"):
-            url = f"https://{url}"
         headers = self.update_cookie(
             cookie,
         )
         try:
-            match bool(proxy):
-                case False:
+            match (content, bool(proxy)):
+                case (True, False):
                     response = await self.__request_url_get(
                         url,
                         headers,
@@ -47,8 +45,8 @@ class Html:
                     )
                     await sleep_time()
                     response.raise_for_status()
-                    return response.text if content else str(response.url)
-                case True:
+                    return response.text
+                case (True, True):
                     response = await self.__request_url_get_proxy(
                         url,
                         headers,
@@ -57,7 +55,24 @@ class Html:
                     )
                     await sleep_time()
                     response.raise_for_status()
-                    return response.text if content else str(response.url)
+                    return response.text
+                case (False, False):
+                    response = await self.__request_url_head(
+                        url,
+                        headers,
+                        **kwargs,
+                    )
+                    await sleep_time()
+                    return str(response.url)
+                case (False, True):
+                    response = await self.__request_url_head_proxy(
+                        url,
+                        headers,
+                        proxy,
+                        **kwargs,
+                    )
+                    await sleep_time()
+                    return str(response.url)
                 case _:
                     raise ValueError
         except HTTPError as error:

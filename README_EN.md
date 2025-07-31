@@ -4,17 +4,15 @@
 <p><a href="README.md">简体中文</a> | English</p>
 <a href="https://trendshift.io/repositories/5435" target="_blank"><img src="https://trendshift.io/api/badge/repositories/5435" alt="JoeanAmier%2FXHS-Downloader | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 <br>
-<img alt="GitHub" src="https://img.shields.io/github/license/JoeanAmier/XHS-Downloader?style=flat-square">
-<img alt="GitHub forks" src="https://img.shields.io/github/forks/JoeanAmier/XHS-Downloader?style=flat-square&color=55efc4">
-<img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/JoeanAmier/XHS-Downloader?style=flat-square&color=fda7df">
-<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/JoeanAmier/XHS-Downloader?style=flat-square&color=a29bfe">
-<img alt="GitHub release (with filter)" src="https://img.shields.io/github/v/release/JoeanAmier/XHS-Downloader?style=flat-square&color=48dbfb">
+<img alt="GitHub" src="https://img.shields.io/github/license/JoeanAmier/XHS-Downloader?style=for-the-badge&color=ff7a45">
+<img alt="GitHub forks" src="https://img.shields.io/github/forks/JoeanAmier/XHS-Downloader?style=for-the-badge&color=9254de">
+<img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/JoeanAmier/XHS-Downloader?style=for-the-badge&color=ff7875">
+<img alt="Static Badge" src="https://img.shields.io/badge/UserScript-ffec3d?style=for-the-badge&logo=tampermonkey&logoColor=%2300485B">
 <br>
-<img alt="Static Badge" src="https://img.shields.io/badge/Python-3.12-b8e994?style=flat-square&logo=python&labelColor=3dc1d3">
-<img alt="Static Badge" src="https://img.shields.io/badge/UserScript-ffec3d?style=flat-square&logo=tampermonkey&logoColor=%2300485B">
-<img src="https://img.shields.io/badge/Sourcery-enabled-884898?style=flat-square&color=1890ff" alt="">
-<img alt="Static Badge" src="https://img.shields.io/badge/Docker-badc58?style=flat-square&logo=docker">
-<img alt="GitHub all releases" src="https://img.shields.io/github/downloads/JoeanAmier/XHS-Downloader/total?style=flat-square&color=ffdd59">
+<img alt="Static Badge" src="https://img.shields.io/badge/Python-3.12-3498db?style=for-the-badge&logo=python&labelColor=fffa65">
+<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/JoeanAmier/XHS-Downloader?style=for-the-badge&color=73d13d">
+<img alt="GitHub release (with filter)" src="https://img.shields.io/github/v/release/JoeanAmier/XHS-Downloader?style=for-the-badge&color=40a9ff">
+<img alt="GitHub all releases" src="https://img.shields.io/github/downloads/JoeanAmier/XHS-Downloader/total?style=for-the-badge&color=f759ab">
 </div>
 <br>
 <p>🔥 <b>RedNote Link Extraction/Content Collection Tool</b>：Extract account-published, favorites, and liked works links; extract search result works links and user links; collect RedNote works information; extract RedNote works download addresses; download RedNote watermark-free works files!</p>
@@ -38,7 +36,6 @@
 <li>✅ Read cookies from browser</li>
 <li>✅ Customizable file name format</li>
 <li>✅ Support API call functionality</li>
-<li>✅ Support MCP call functionality</li>
 <li>✅ Support file breakpoint resume download</li>
 <li>✅ Intelligent recognition of works file types</li>
 <li>✅ Supports author alias configuration</li>
@@ -78,7 +75,6 @@
 <h2>🖱 Program Run</h2>
 <p>⭐ Mac OS, Windows 10 and above users can go to <a href="https://github.com/JoeanAmier/XHS-Downloader/releases/latest">Releases</a> or <a href="https://github.com/JoeanAmier/XHS-Downloader/actions">Actions</a> to download the program package, unzip it, open the program folder, and double-click to run <code>main</code> to use.</p>
 <p>⭐ This project includes GitHub Actions for automatic building executable files. Users can use GitHub Actions to build the latest source code into executable files at any time!</p>
-<p>⭐ For the automatic building executable files tutorial, please refer to the <code>Build of Executable File Guide</code> section of this document. If you need a more detailed step-by-step tutorial with illustrations, please <a href="https://mp.weixin.qq.com/s/TorfoZKkf4-x8IBNLImNuw">check out this article</a>!</p>
 <p><strong>Note: The executable file <code>main</code> for Mac OS may need to be launched from the terminal command line; Due to device limitations, the Mac OS executable file has not been tested and its availability cannot be guaranteed!</strong></p>
 <p>If you use the program in this way, the default download path for files is: <code>.\_internal\Download</code>; the configuration file path is: <code>.\_internal\settings.json</code></p>
 <h2>⌨️ Docker Run</h2>
@@ -87,12 +83,11 @@
 <ul>
 <li>Method 1: Build the image using the <code>Dockerfile</code></li>
 <li>Method 2: Pull the image using the command <code>docker pull joeanamier/xhs-downloader</code></li>
-<li>Method 3: Pull the image using the command <code>docker pull ghcr.io/joeanamier/xhs-downloader</code></li>
 </ul>
 <li>Create Container</li>
 <ul>
-<li>TUI Mode: <code>docker run --name ContainerName(optional) -p HostPort:5556 -v xhs_downloader_volume:/app -it joeanamier/xhs-downloader</code></li>
-<li>API Mode: <code>docker run --name ContainerName(optional) -p HostPort:5556 -v xhs_downloader_volume:/app -it joeanamier/xhs-downloader python main.py server</code></li>
+<li>TUI Mode: <code>docker run --name ContainerName(optional) -p HostPort:6666 -it joeanamier/xhs-downloader</code></li>
+<li>API Mode: <code>docker run --name ContainerName(optional) -p HostPort:6666 -it joeanamier/xhs-downloader python main.py server</code></li>
 </ul>
 <li>Run Container
 <ul>
@@ -122,13 +117,11 @@
 <hr>
 <img src="static/screenshot/命令行模式截图EN2.png" alt="">
 <h1>🖥 Server Mode</h1>
-<p>Server modes include API mode and MCP mode!</p>
-<h2>API Mode</h2>
-<p><b>Start:</b> Run the command: <code>python .\main.py api</code></p>
+<p><b>Start:</b> Run the command: <code>python .\main.py server</code></p>
 <p><b>Stop:</b> Press <code>Ctrl</code> + <code>C</code> to stop the server</p>
-<p>Open <code>http://127.0.0.1:5556/docs</code> or <code>http://127.0.0.1:5556/redoc</code>; you will see automatically generated interactive API documentation!</p>
+<p>Open <code>http://127.0.0.1:6666/docs</code> or <code>http://127.0.0.1:6666/redoc</code>; you will see automatically generated interactive API documentation!</p>
 <p><b>Request endpoint:</b>
-<code>/xhs/detail</code></p>
+<code>/xhs/</code></p>
 <p><b>Request method:</b>
 <code>POST</code></p>
 <p><b>Request format:</b>
@@ -186,7 +179,7 @@
 <pre>
 async def example_api():
     """通过 API 设置参数，适合二次开发"""
-    server = "http://127.0.0.1:5556/xhs/detail"
+    server = "http://127.0.0.1:6666/xhs/"
     data = {
         "url": "",  # 必需参数
         "download": True,
@@ -200,24 +193,6 @@ async def example_api():
     response = post(server, json=data, timeout=10)
     print(response.json())
 </pre>
-<h2>MCP Mode</h2>
-<p><b>Start:</b> Run the command: <code>python .\main.py mcp</code></p>
-<p><b>Stop:</b> Press <code>Ctrl</code> + <code>C</code> to stop the server</p>
-<h3>MCP Configuration Example</h3>
-
-[//]: # (<h4>STDIO</h4>)
-<h4>Streamable HTTP</h4>
-<p><b>MCP URL:</b><code>http://127.0.0.1:5556/mcp/</code></p>
-<img src="static/screenshot/MCP配置示例.png" alt="MCP Configuration Example">
-<h3>MCP Invocation Example</h3>
-<h4><strong>Retrieve RedNote Works Information</strong></h4>
-<img src="static/screenshot/MCP获取数据.png" alt="MCP Data Retrieval">
-<hr>
-<h4><strong>Download RedNote Works Files</strong></h4>
-<p>When downloading images, you can specify the sequence numbers of the images to download. By default, post information is not returned. If you need the post information, please explicitly state so during the conversation.</p>
-<img src="static/screenshot/MCP下载文件1.png" alt="MCP File Download">
-<hr>
-<img src="static/screenshot/MCP下载文件2.png" alt="MCP File Download">
 <h1>📜 Others</h1>
 <ul>
 <li>Due to the date information carried in the links of RedNote works, using links obtained from previous dates may be subject to risk control. It is recommended to use the latest RedNote works links when downloading RedNote work files</li>
@@ -257,6 +232,7 @@ async def example():
     """通过代码设置参数，适合二次开发"""
     # 示例链接
     demo_link = "https://www.xiaohongshu.com/explore/XXX?xsec_token=XXX"
+
     # 实例对象
     work_path = "D:\\"  # 作品数据/文件保存根路径，默认值：项目根路径
     folder_name = "Download"  # 作品文件储存文件夹名称（自动创建），默认值：Download
@@ -278,8 +254,10 @@ async def example():
     author_archive = True  # 是否将每个作者的作品存至单独的文件夹
     write_mtime = True  # 是否将作品文件的 修改时间 修改为作品的发布时间
     read_cookie = None  # 读取浏览器 Cookie，支持设置浏览器名称（字符串）或者浏览器序号（整数），设置为 None 代表不读取
+
     # async with XHS() as xhs:
     #     pass  # 使用默认参数
+
     async with XHS(
         work_path=work_path,
         folder_name=folder_name,
@@ -593,10 +571,6 @@ A:
 A: Due to permission restrictions, you cannot directly trigger Actions from the main repository. Please use the forked
 repository to execute the build process
 
-<h1>⭐ Star History</h1>
-<p>
-<img alt="Star History Chart" src="https://api.star-history.com/svg?repos=JoeanAmier/XHS-Downloader&amp;type=Timeline"/>
-</p>
 <h1>♥️ Support the Project</h1>
 <p>If <b>XHS-Downloader</b> has been helpful to you, please consider giving it a <b>Star</b> ⭐. Thank you for your support!</p>
 <table>
@@ -623,7 +597,6 @@ repository to execute the build process
 <li>Write code that is easy to read; add appropriate annotation to help others understand your intentions.</li>
 <li>Each commit should include a clear and concise commit message describing the changes made. The commit message should follow this format: <code>&lt;type&gt;: &lt;short description&gt;</code></li>
 <li>When you are ready to submit a pull request, please prioritize submitting them to the <code>develop</code> branch; this provides maintainers with a buffer zone for additional testing and review before final merging into the <code>master</code> branch.</li>
-<li>It is recommended to communicate with the author before starting development or when encountering questions to ensure alignment in direction and avoid redundant efforts or unnecessary commits.</li>
 </ul>
 <p><strong>Reference materials:</strong></p>
 <ul>
@@ -638,32 +611,48 @@ repository to execute the build process
 </ul>
 <p>✨ <b>Other Open Source Projects by the Author:</b></p>
 <ul>
-<li><b>DouK-Downloader（抖音、TikTok）</b>：<a href="https://github.com/JoeanAmier/TikTokDownloader">https://github.com/JoeanAmier/TikTokDownloader</a></li>
+<li><b>TikTokDownloader（抖音、TikTok）</b>：<a href="https://github.com/JoeanAmier/TikTokDownloader">https://github.com/JoeanAmier/TikTokDownloader</a></li>
 <li><b>KS-Downloader（快手、KuaiShou）</b>：<a href="https://github.com/JoeanAmier/KS-Downloader">https://github.com/JoeanAmier/KS-Downloader</a></li>
 </ul>
 
 # 💰 Project Sponsorship
 
-## DartNode
+## JetBrains Tools
 
-[![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
+![PyCharm logo](https://resources.jetbrains.com/storage/products/company/brand/logos/PyCharm.svg)
 
+<p><b>JetBrains</b> support active projects recognized within the global open-source community with complimentary licenses for non-commercial development.</p>
+
+***
+
+## TikHub
+
+<img src="static/赞助商_TikHub_Logo.png" alt="TikHub">
+<p><a href="https://tikhub.io/">TikHub</a> is a leading data interface service provider, specializing in offering high-quality data interfaces for multiple popular platforms, including DouYin, TikTok, Xiaohongshu, Instagram, Twitter, and Kuaishou.</p>
+<p>TikHub also provides customized services such as live streaming room monitoring, post monitoring, and influencer monitoring to meet the needs of different business scenarios.</p>
+<p>Through daily sign-ins, users can obtain a certain quota of usage for free. You can use my <strong>referral link</strong>：<a href="https://user.tikhub.io/users/signup?referral_code=ZrdH8McC">https://user.tikhub.io/users/signup?referral_code=ZrdH8McC</a> or <strong>Referral Code</strong>：<code>ZrdH8McC</code>，Register and recharge to receive <code>$2</code> limit！</p>
+<p><a href="https://tikhub.io/">TikHub</a> Provide the following services:</p>
+<ul>
+<li>Rich data interfaces</li>
+<li>Free daily check-in to obtain credit limit</li>
+<li>High quality API services</li>
+<li>Official website:<a href="https://tikhub.io/">https://tikhub.io/</a></li>
+<li>User login address:<a href="https://user.tikhub.io/">https://user.tikhub.io/</a></li>
+</ul>
 <h1>⚠️ Disclaimer</h1>
-<ol>
-<li>The user's use of this project is entirely at their own discretion and responsibility. The author assumes no liability for any losses, claims, or risks arising from the user's use of this project.</li>
-<li>The code and functionalities provided by the author of this project are based on current knowledge and technological developments. The author strives to ensure the correctness and security of the code according to existing technical capabilities but does not guarantee that the code is entirely free of errors or defects.</li>
-<li>All third-party libraries, plugins, or services relied upon by this project follow their respective open-source or commercial licenses. Users must review and comply with those license agreements. The author assumes no responsibility for the stability, security, or compliance of third-party components.</li>
-<li>Users must strictly comply with the requirements of the <a href="https://github.com/JoeanAmier/XHS-Downloader/blob/master/LICENSE">GNU General Public License v3.0</a> when using this project and properly indicate that the code was used under the <a href="https://github.com/JoeanAmier/XHS-Downloader/blob/master/LICENSE">GNU General Public License v3.0</a>.</li>
-<li>When using the code and features of this project, users must independently research relevant laws and regulations and ensure their actions are legal and compliant. Any legal liabilities or risks arising from violations of laws and regulations shall be borne solely by the user.</li>
-<li>Users must not use this tool to engage in any activities that infringe intellectual property rights, including but not limited to downloading or distributing copyright-protected content without authorization. The developers do not participate in, support, or endorse any unauthorized acquisition or distribution of illegal content.</li>
-<li>This project assumes no responsibility for the compliance of any data processing activities (including collection, storage, and transmission) conducted by users. Users must comply with relevant laws and regulations and ensure that their processing activities are lawful and proper. Legal liabilities resulting from non-compliant operations shall be borne by the user.</li>
-<li>Under no circumstances may users associate the author, contributors, or other related parties of this project with their usage of the project, nor may they hold these parties responsible for any loss or damage arising from such usage.</li>
+<ul>
+<li>Users decide on their own how to use this project and bear the risks themselves. The author is not responsible for any losses, liabilities, or risks incurred by users in the use of this project</li>
+<li>The code and functionalities provided by the author of this project are developed based on existing knowledge and technology. The author strives to ensure the correctness and security of the code but does not guarantee that the code is completely error-free or defect-free.</li>
+<li>Users must strictly adhere to the provisions in <a href="https://github.com/JoeanAmier/XHS-Downloader/blob/master/LICENSE">GNU
+    General Public License v3.0</a> , and appropriately mention the use of code adhering <a
+        href="https://github.com/JoeanAmier/XHS-Downloader/blob/master/LICENSE">GNU General Public License
+    v3.0</a>.
+</li>
+<li>Under no circumstances shall users associate the author of this project, contributors, or other related parties with the user's usage behavior, or demand that they be held responsible for any losses or damages incurred by the user's use of this project.</li>
+<li>Users must independently study relevant laws and regulations when using the code and functionalities of this project and ensure that their usage is legal and compliant. Users are solely responsible for any legal liability and risks resulting from violations of laws and regulations.</li>
 <li>The author of this project will not provide a paid version of the XHS-Downloader project, nor will they offer any commercial services related to the XHS-Downloader project.</li>
-<li>Any secondary development, modification, or compilation based on this project is unrelated to the original author. The original author assumes no liability for any consequences resulting from such secondary development. Users bear full responsibility for all outcomes arising from such modifications.</li>
-<li>This project grants no patent licenses; if the use of this project leads to patent disputes or infringement, the user bears all associated risks and responsibilities. Without written authorization from the author or rights holder, users may not use this project for any commercial promotion, marketing, or re-licensing.</li>
-<li>The author reserves the right to terminate service to any user who violates this disclaimer at any time and may require them to destroy all obtained code and derivative works.</li>
-<li>The author reserves the right to update this disclaimer at any time without prior notice. Continued use of the project constitutes acceptance of the revised terms.</li>
-</ol>
+<li>Any secondary development, modification, or compilation of the program based on this project is unrelated to the original author. The original author is not responsible for any consequences related to secondary development or its results. Users should take full responsibility for any situations that may arise from secondary development on their own.</li>
+</ul>
 <b>Before using the code and functionalities of this project, please carefully consider and accept the above disclaimer. If you have any questions or disagree with the statement, please do not use the code and functionalities of this project. If you use the code and functionalities of this project, it is considered that you fully understand and accept the above disclaimer, and willingly assume all risks and consequences associated with the use of this project.</b>
 
 # 💡 Project References
@@ -671,7 +660,6 @@ repository to execute the build process
 * https://github.com/encode/httpx/
 * https://github.com/tiangolo/fastapi
 * https://github.com/textualize/textual/
-* https://github.com/jlowin/fastmcp
 * https://github.com/omnilib/aiosqlite
 * https://github.com/thewh1teagle/rookie
 * https://github.com/carpedm20/emoji/
