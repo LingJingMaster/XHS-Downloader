@@ -182,7 +182,7 @@ class XHS:
             if await self.skip_download(i := container["作品ID"]):
                 logging(log, _("作品 {0} 存在下载记录，跳过下载").format(i))
             else:
-                path, result = await self.download.run(
+                path_dict, result = await self.download.run(
                     u,
                     container["动图地址"],
                     index,
@@ -194,26 +194,30 @@ class XHS:
                     container["时间戳"],
                     log,
                     bar,
+                    work_id=container["作品ID"],  # 传递作品ID
                 )
-                work_path = path
+                work_path = path_dict
                 await self.__add_record(i, result)
         elif not u:
             logging(log, _("提取作品文件下载地址失败"), ERROR)
         
         # 保存Markdown记录（如果启用且有下载路径，或者强制生成到默认路径）
         if work_path or self.manager.markdown_record:
-            # 如果没有下载路径但启用了Markdown记录，使用默认路径
+            # 如果没有下载路径但启用了Markdown记录，创建默认路径字典
             if not work_path:
-                # 计算默认路径（与下载逻辑保持一致）
-                nickname = container["作者ID"] + "_" + self.CLEANER.filter_name(container["作者昵称"])
-                from pathlib import Path
-                if self.manager.author_archive:
-                    folder = self.manager.folder.joinpath(nickname)
-                    folder.mkdir(exist_ok=True)
-                else:
-                    folder = self.manager.folder
-                work_path = self.manager.archive(folder, name, self.manager.folder_mode)
-                work_path.mkdir(exist_ok=True)
+                # 创建新的目录结构
+                base_folder = self.manager.folder
+                work_path = {
+                    'base': base_folder,
+                    'notes': base_folder / "notes",
+                    'images': base_folder / "images",
+                    'videos': base_folder / "videos",
+                    'livePhotos': base_folder / "livePhotos"
+                }
+                # 确保目录存在
+                for folder in work_path.values():
+                    if hasattr(folder, 'mkdir'):
+                        folder.mkdir(exist_ok=True)
             
             await self.save_markdown_record(container, work_path)
         
@@ -230,59 +234,82 @@ class XHS:
         data.pop("时间戳", None)
         await self.data_recorder.add(**data)
 
-    def generate_markdown_content(self, data: dict) -> str:
-        """生成作品信息的Markdown格式内容"""
-        content = f"""# {data.get('作品标题', '未知标题')}
+    def generate_markdown_content(self, data: dict, work_id: str = None) -> str:
+        """生成作品信息的Markdown格式内容 - 参考典范格式"""
+        
+        # 获取标题，用于文件名
+        title = data.get('作品标题', '未知标题')
+        work_id = work_id or data.get('作品ID', 'unknown')
+        
+        # 生成媒体文件引用
+        media_content = self._generate_media_references(data, work_id)
+        
+        content = f"""# {title}
 
-## 📋 作品基本信息
+### 笔记信息
+笔记链接：{data.get('作品链接', '#')}
+编辑于：{data.get('采集时间', '未知')}
 
-| 字段 | 内容 |
-|------|------|
-| **作品ID** | {data.get('作品ID', '未知')} |
-| **作品类型** | {data.get('作品类型', '未知')} |
-| **发布时间** | {data.get('发布时间', '未知')} |
-| **最后更新** | {data.get('最后更新时间', '未知')} |
-| **作品链接** | [{data.get('作品链接', '#')}]({data.get('作品链接', '#')}) |
+作者：
+{data.get('作者昵称', '未知')}
+主页链接：{data.get('作者链接', '#')}
 
-## 👤 作者信息
-
-| 字段 | 内容 |
-|------|------|
-| **作者昵称** | {data.get('作者昵称', '未知')} |
-| **作者ID** | {data.get('作者ID', '未知')} |
-| **作者链接** | [{data.get('作者链接', '#')}]({data.get('作者链接', '#')}) |
-
-## 📊 互动数据
-
-| 字段 | 数量 |
-|------|------|
-| **点赞数量** | {data.get('点赞数量', '0')} |
-| **收藏数量** | {data.get('收藏数量', '0')} |
-| **评论数量** | {data.get('评论数量', '0')} |
-| **分享数量** | {data.get('分享数量', '0')} |
-
-## 📝 作品描述
-
+### 笔记描述
 {data.get('作品描述', '暂无描述')}
 
-## 🏷️ 作品标签
+{data.get('作品标签', '')}
 
-{data.get('作品标签', '暂无标签')}
+### 互动数据
+- 点赞：{data.get('点赞数量', '0')}
+- 收藏：{data.get('收藏数量', '0')}  
+- 评论：{data.get('评论数量', '0')}
+- 分享：{data.get('分享数量', '0')}
 
-## 📥 下载信息
-
-- **下载地址数量**: {len(data.get('下载地址', '').split()) if isinstance(data.get('下载地址', ''), str) and data.get('下载地址') else (len(data.get('下载地址', [])) if isinstance(data.get('下载地址', []), list) else 0)}
-- **动图地址数量**: {len([i for i in data.get('动图地址', '').split() if i != 'NaN']) if isinstance(data.get('动图地址', ''), str) and data.get('动图地址') else (len([i for i in data.get('动图地址', []) if i and i != 'NaN']) if isinstance(data.get('动图地址', []), list) else 0)}
-- **采集时间**: {data.get('采集时间', '未知')}
+{media_content}
 
 ---
-
-*此文件由 XHS-Downloader 自动生成*
+*此文件由 XHS-Downloader 自动生成 | 发布时间：{data.get('发布时间', '未知')}*
 """
         return content
 
+    def _generate_media_references(self, data: dict, work_id: str) -> str:
+        """生成媒体文件的markdown引用"""
+        media_refs = []
+        
+        # 获取下载地址信息
+        download_urls = data.get('下载地址', [])
+        if isinstance(download_urls, str):
+            download_urls = download_urls.split()
+        
+        live_urls = data.get('动图地址', [])
+        if isinstance(live_urls, str):
+            live_urls = [i for i in live_urls.split() if i != 'NaN']
+        elif isinstance(live_urls, list):
+            live_urls = [i for i in live_urls if i and i != 'NaN']
+        
+        work_type = data.get('作品类型', '')
+        
+        if work_type == '视频':
+            # 视频文件引用
+            media_refs.append("### 视频")
+            media_refs.append(f"[视频文件](../videos/{work_id}.mp4)")
+        else:
+            # 图片文件引用
+            if download_urls:
+                media_refs.append("### 图片")
+                for i in range(len(download_urls)):
+                    media_refs.append(f"![](../images/{work_id}_{i+1}.png)")
+            
+            # 动态照片引用
+            if live_urls:
+                media_refs.append("### 动态照片")
+                for i in range(len(live_urls)):
+                    media_refs.append(f"[动态照片{i+1}](../livePhotos/{work_id}_{i+1}.mp4)")
+        
+        return "\n".join(media_refs) if media_refs else ""
+
     async def save_markdown_record(self, data: dict, work_path):
-        """将作品信息保存为Markdown文件到作品文件夹"""
+        """将作品信息保存为Markdown文件到notes目录"""
         if not self.manager.markdown_record:
             return
         
@@ -301,12 +328,26 @@ class XHS:
             if isinstance(data_copy.get('动图地址'), list):
                 data_copy['动图地址'] = " ".join(str(i) if i else "NaN" for i in data_copy['动图地址'])
             
-            # 生成Markdown内容
-            markdown_content = self.generate_markdown_content(data_copy)
+            # 获取作品ID和标题
+            work_id = data_copy.get('作品ID', 'unknown')
+            title = data_copy.get('作品标题', '未知标题')
             
-            # 构建文件路径
-            markdown_filename = f"{data_copy.get('作品ID', 'unknown')}_info.md"
-            markdown_path = work_path / markdown_filename
+            # 清理标题用于文件名（移除特殊字符）
+            clean_title = self.CLEANER.filter_name(title, replace="_")[:50]  # 限制长度
+            
+            # 生成Markdown内容
+            markdown_content = self.generate_markdown_content(data_copy, work_id)
+            
+            # 构建文件路径 - 保存到notes目录，使用描述性命名
+            if isinstance(work_path, dict):
+                notes_folder = work_path['notes']
+            else:
+                # 兼容旧的路径格式
+                notes_folder = work_path / "notes"
+                notes_folder.mkdir(exist_ok=True)
+            
+            markdown_filename = f"{clean_title}_{work_id}.md"
+            markdown_path = notes_folder / markdown_filename
             
             # 确保目录存在
             markdown_path.parent.mkdir(parents=True, exist_ok=True)
