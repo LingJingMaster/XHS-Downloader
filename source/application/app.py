@@ -248,7 +248,6 @@ class XHS:
 
 ### 笔记信息
 笔记链接：{data.get('作品链接', '#')}
-编辑于：{data.get('采集时间', '未知')}
 
 作者：
 {data.get('作者昵称', '未知')}
@@ -267,8 +266,6 @@ class XHS:
 
 {media_content}
 
----
-*此文件由 XHS-Downloader 自动生成 | 发布时间：{data.get('发布时间', '未知')}*
 """
         return content
 
