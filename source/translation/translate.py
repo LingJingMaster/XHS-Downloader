@@ -1,8 +1,15 @@
 from gettext import translation
 from locale import getlocale
 from pathlib import Path
+import sys
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+# 处理 PyInstaller 打包后的路径问题
+if getattr(sys, 'frozen', False):
+    # 如果是打包后的可执行文件，使用可执行文件所在目录
+    ROOT = Path(sys.executable).parent
+else:
+    # 如果是源代码运行，使用相对于文件的路径
+    ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 class TranslationManager:
