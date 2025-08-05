@@ -1,0 +1,35 @@
+# 构建相关文件 - 添加到主 .gitignore 文件中
+
+# PyInstaller 构建目录
+build/
+dist/
+*.spec.backup
+
+# 构建缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 临时文件
+*.tmp
+*.temp
+
+# 构建日志
+build.log
+pyinstaller.log
+
+# 压缩包（如果在本地构建）
+XHS-Downloader-*.zip
+XHS-Downloader-*.tar.gz
+XHS-Downloader-*.sha256
+
+# IDE 文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
