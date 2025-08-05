@@ -14,10 +14,10 @@ def check_pyinstaller():
     """检查 PyInstaller 是否安装"""
     try:
         import PyInstaller
-        print(f"✅ PyInstaller 已安装，版本: {PyInstaller.__version__}")
+        print(f"[OK] PyInstaller 已安装，版本: {PyInstaller.__version__}")
         return True
     except ImportError:
-        print("❌ PyInstaller 未安装")
+        print("[ERROR] PyInstaller 未安装")
         return False
 
 def install_pyinstaller():
@@ -26,10 +26,10 @@ def install_pyinstaller():
     try:
         subprocess.run([sys.executable, "-m", "pip", "install", "pyinstaller>=6.0.0"], 
                       check=True)
-        print("✅ PyInstaller 安装成功")
+        print("[OK] PyInstaller 安装成功")
         return True
     except subprocess.CalledProcessError:
-        print("❌ PyInstaller 安装失败")
+        print("[ERROR] PyInstaller 安装失败")
         return False
 
 def clean_build():
@@ -40,7 +40,7 @@ def clean_build():
         if os.path.exists(dir_name):
             import shutil
             shutil.rmtree(dir_name)
-            print(f"✅ 已清理 {dir_name} 目录")
+            print(f"[OK] 已清理 {dir_name} 目录")
 
 def build_executable():
     """构建可执行文件"""
@@ -50,8 +50,8 @@ def build_executable():
     system = platform.system()
     machine = platform.machine()
     
-    print(f"🖥️  系统: {system}")
-    print(f"🏗️  架构: {machine}")
+    print(f"[INFO] 系统: {system}")
+    print(f"[INFO] 架构: {machine}")
     
     try:
         # 使用 spec 文件构建
@@ -67,22 +67,22 @@ def build_executable():
             
         if exe_file.exists():
             file_size = exe_file.stat().st_size / (1024 * 1024)  # MB
-            print(f"✅ 构建成功!")
-            print(f"📁 输出文件: {exe_file}")
-            print(f"📊 文件大小: {file_size:.1f} MB")
+            print(f"[OK] 构建成功!")
+            print(f"[INFO] 输出文件: {exe_file}")
+            print(f"[INFO] 文件大小: {file_size:.1f} MB")
             
             # 在 macOS 上设置执行权限
             if system != "Windows":
                 os.chmod(exe_file, 0o755)
-                print("✅ 已设置执行权限")
+                print("[OK] 已设置执行权限")
                 
             return True
         else:
-            print("❌ 构建失败，未找到输出文件")
+            print("[ERROR] 构建失败，未找到输出文件")
             return False
             
     except subprocess.CalledProcessError as e:
-        print(f"❌ 构建失败: {e}")
+        print(f"[ERROR] 构建失败: {e}")
         return False
 
 def create_release_info():
@@ -123,10 +123,10 @@ def create_release_info():
         f.write(f"- 确保网络连接正常\n")
         f.write(f"- 支持的功能请参考项目文档\n")
     
-    print(f"✅ 已创建发布信息: {info_file}")
+    print(f"[OK] 已创建发布信息: {info_file}")
 
 def main():
-    print("🚀 XHS-Downloader 构建工具")
+    print("=== XHS-Downloader 构建工具 ===")
     print("=" * 40)
     
     # 检查并安装 PyInstaller
@@ -140,10 +140,10 @@ def main():
     # 构建可执行文件
     if build_executable():
         create_release_info()
-        print("\n🎉 构建完成!")
-        print("📁 输出目录: dist/")
+        print("\n[SUCCESS] 构建完成!")
+        print("[INFO] 输出目录: dist/")
     else:
-        print("\n❌ 构建失败!")
+        print("\n[FAILED] 构建失败!")
         sys.exit(1)
 
 if __name__ == "__main__":
