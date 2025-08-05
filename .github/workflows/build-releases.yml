@@ -1,0 +1,211 @@
+name: 构建可执行文件
+
+on:
+  # 手动触发
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: '是否创建 GitHub Release'
+        required: false
+        default: 'false'
+        type: boolean
+  
+  # 推送到 main 分支时触发
+  push:
+    branches: [ main, master ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'static/screenshot/**'
+  
+  # Pull Request 时触发（仅构建，不发布）
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    name: 构建 ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows-x64
+            executable: XHS-Downloader.exe
+            archive_cmd: '7z a'
+            archive_ext: '.zip'
+          - os: macos-latest
+            platform: macos-arm64
+            executable: XHS-Downloader
+            archive_cmd: 'tar -czf'
+            archive_ext: '.tar.gz'
+          - os: macos-13  # Intel macOS
+            platform: macos-x64  
+            executable: XHS-Downloader
+            archive_cmd: 'tar -czf'
+            archive_ext: '.tar.gz'
+
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 设置 Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+
+    - name: 安装项目依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: 安装构建依赖
+      run: |
+        pip install -r build_requirements.txt
+
+    - name: 构建可执行文件
+      run: |
+        python build.py
+
+    - name: 验证构建结果
+      shell: bash
+      run: |
+        if [ -f "dist/${{ matrix.executable }}" ]; then
+          echo "✅ 构建成功: dist/${{ matrix.executable }}"
+          ls -la dist/
+          # 获取文件大小
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            powershell -Command "Get-ChildItem dist/${{ matrix.executable }} | Select-Object Name,Length"
+          else
+            du -h dist/${{ matrix.executable }}
+          fi
+        else
+          echo "❌ 构建失败: 未找到 dist/${{ matrix.executable }}"
+          ls -la dist/ || echo "dist 目录不存在"
+          exit 1
+        fi
+
+    - name: 重命名可执行文件
+      shell: bash
+      run: |
+        cd dist
+        if [[ "${{ matrix.platform }}" == "windows-x64" ]]; then
+          mv "${{ matrix.executable }}" "XHS-Downloader-${{ matrix.platform }}.exe"
+          FINAL_NAME="XHS-Downloader-${{ matrix.platform }}.exe"
+        else
+          mv "${{ matrix.executable }}" "XHS-Downloader-${{ matrix.platform }}"
+          FINAL_NAME="XHS-Downloader-${{ matrix.platform }}"
+        fi
+        echo "FINAL_NAME=${FINAL_NAME}" >> $GITHUB_ENV
+
+    - name: 创建压缩包 (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        cd dist
+        7z a "XHS-Downloader-${{ matrix.platform }}.zip" "XHS-Downloader-${{ matrix.platform }}.exe" "*info.txt"
+
+    - name: 创建压缩包 (macOS)
+      if: startsWith(matrix.os, 'macos')
+      run: |
+        cd dist
+        tar -czf "XHS-Downloader-${{ matrix.platform }}.tar.gz" "XHS-Downloader-${{ matrix.platform }}" *info.txt
+
+    - name: 生成校验文件
+      shell: bash
+      run: |
+        cd dist
+        if [[ "${{ matrix.platform }}" == "windows-x64" ]]; then
+          ARCHIVE="XHS-Downloader-${{ matrix.platform }}.zip"
+          powershell -Command "Get-FileHash '$ARCHIVE' -Algorithm SHA256 | Format-List" > "${ARCHIVE}.sha256"
+        else
+          ARCHIVE="XHS-Downloader-${{ matrix.platform }}.tar.gz"
+          shasum -a 256 "$ARCHIVE" > "${ARCHIVE}.sha256"
+        fi
+
+    - name: 上传构建产物
+      uses: actions/upload-artifact@v4
+      with:
+        name: XHS-Downloader-${{ matrix.platform }}
+        path: |
+          dist/XHS-Downloader-${{ matrix.platform }}*
+        retention-days: 30
+
+  release:
+    name: 创建 Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == 'true') ||
+      (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 下载所有构建产物
+      uses: actions/download-artifact@v4
+      with:
+        path: releases
+
+    - name: 准备发布文件
+      run: |
+        mkdir -p release_files
+        find releases -name "*.zip" -o -name "*.tar.gz" -o -name "*.sha256" | while read file; do
+          cp "$file" release_files/
+        done
+        ls -la release_files/
+
+    - name: 生成发布标签
+      id: tag
+      run: |
+        TAG="v$(date +'%Y.%m.%d')-$(echo $GITHUB_SHA | cut -c1-7)"
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
+        echo "Generated tag: $TAG"
+
+    - name: 创建 Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag.outputs.tag }}
+        name: XHS-Downloader ${{ steps.tag.outputs.tag }}
+        body: |
+          ## 🚀 XHS-Downloader 自动构建版本
+          
+          **构建时间**: $(date +'%Y-%m-%d %H:%M:%S UTC')
+          **提交**: ${{ github.sha }}
+          
+          ### 📦 下载说明
+          
+          | 平台 | 文件 | 系统要求 |
+          |------|------|----------|
+          | Windows | `XHS-Downloader-windows-x64.zip` | Windows 10+ |
+          | macOS (Apple Silicon) | `XHS-Downloader-macos-arm64.tar.gz` | macOS 11.0+ |
+          | macOS (Intel) | `XHS-Downloader-macos-x64.tar.gz` | macOS 10.15+ |
+          
+          ### 🔐 安全校验
+          
+          每个压缩包都提供了 SHA256 校验文件，请在使用前验证文件完整性。
+          
+          ### 📋 使用方法
+          
+          1. 下载对应平台的压缩包
+          2. 解压缩到任意目录
+          3. 运行可执行文件：
+             - Windows: 双击 `XHS-Downloader.exe`
+             - macOS: 终端运行 `./XHS-Downloader`
+          
+          ### ⚠️ 注意事项
+          
+          - 首次运行会在当前目录创建配置文件
+          - macOS 用户可能需要在"系统偏好设置 > 安全性与隐私"中允许运行
+          - 部分杀毒软件可能误报，这是 PyInstaller 的常见问题
+          
+          ---
+          
+          **完整更新日志**: [查看提交历史](https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }})
+        files: release_files/*
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
