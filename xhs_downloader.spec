@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 # 获取项目根目录
-project_root = Path(__file__).parent.absolute()
+project_root = Path(SPECPATH).absolute()
 
 # 添加数据文件和资源文件
 datas = [
