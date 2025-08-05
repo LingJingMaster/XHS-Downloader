@@ -6,7 +6,7 @@ on:
   
   # Pull Request 时触发
   pull_request:
-    branches: [ main, master ]
+    branches: [ master ]
     paths:
       - 'source/**'
       - 'main.py'

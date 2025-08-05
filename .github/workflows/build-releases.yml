@@ -12,7 +12,7 @@ on:
   
   # 推送到 main 分支时触发
   push:
-    branches: [ main, master ]
+    branches: [ master ]
     paths-ignore:
       - '**.md'
       - 'docs/**'
@@ -20,7 +20,7 @@ on:
   
   # Pull Request 时触发（仅构建，不发布）
   pull_request:
-    branches: [ main, master ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -137,7 +137,7 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       (github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == 'true') ||
-      (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
+      (github.event_name == 'push' && github.ref == 'refs/heads/master')
     
     steps:
     - name: 检出代码
