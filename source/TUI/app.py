@@ -1,3 +1,5 @@
+import sys
+from pathlib import Path
 from textual.app import App
 from textual.widgets import RichLog
 
@@ -19,8 +21,28 @@ from .update import Update
 __all__ = ["XHSDownloader"]
 
 
+def get_css_path():
+    """获取 CSS 文件路径，处理 PyInstaller 打包后的情况"""
+    if getattr(sys, 'frozen', False):
+        # PyInstaller 打包后的环境
+        if hasattr(sys, '_MEIPASS'):
+            # 尝试从临时目录获取
+            css_path = Path(sys._MEIPASS) / 'static' / 'XHS-Downloader.tcss'
+            if css_path.exists():
+                return css_path
+        
+        # 尝试从可执行文件目录获取
+        exe_dir = Path(sys.executable).parent
+        css_path = exe_dir / 'static' / 'XHS-Downloader.tcss'
+        if css_path.exists():
+            return css_path
+    
+    # 开发环境或找不到打包资源时的默认路径
+    return ROOT.joinpath("static/XHS-Downloader.tcss")
+
+
 class XHSDownloader(App):
-    CSS_PATH = ROOT.joinpath("static/XHS-Downloader.tcss")
+    CSS_PATH = get_css_path()
     SETTINGS = Settings(ROOT)
 
     def __init__(self):
