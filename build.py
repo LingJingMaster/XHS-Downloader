@@ -24,7 +24,7 @@ def install_pyinstaller():
     """安装 PyInstaller"""
     print("正在安装 PyInstaller...")
     try:
-        subprocess.run([sys.executable, "-m", "pip", "install", "-r", "build_requirements.txt"], 
+        subprocess.run([sys.executable, "-m", "pip", "install", "pyinstaller>=6.0.0"], 
                       check=True)
         print("✅ PyInstaller 安装成功")
         return True
