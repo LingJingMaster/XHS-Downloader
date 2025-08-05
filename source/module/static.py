@@ -4,7 +4,15 @@ VERSION_MAJOR = 2
 VERSION_MINOR = 5
 VERSION_BETA = False
 __VERSION__ = f"{VERSION_MAJOR}.{VERSION_MINOR}.{'beta' if VERSION_BETA else 'stable'}"
-ROOT = Path(__file__).resolve().parent.parent.parent
+import sys
+
+# 处理 PyInstaller 打包后的路径问题
+if getattr(sys, 'frozen', False):
+    # 如果是打包后的可执行文件，使用可执行文件所在目录
+    ROOT = Path(sys.executable).parent
+else:
+    # 如果是源代码运行，使用相对于文件的路径
+    ROOT = Path(__file__).resolve().parent.parent.parent
 PROJECT = f"XHS-Downloader V{VERSION_MAJOR}.{VERSION_MINOR} {'Beta' if VERSION_BETA else 'Stable'}"
 
 REPOSITORY = "https://github.com/JoeanAmier/XHS-Downloader"
